@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Benny — a guided benefits quote assistant from The Benefits Group." />
+  <title>Benny | The Benefits Group</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --brand-blue:#498DCB;
+      --brand-blue-deep:#2E6FAE;
+      --brand-blue-soft:#EDF5FC;
+      --brand-green:#8BB74C;
+      --brand-green-deep:#658F2C;
+      --brand-green-soft:#F1F7E9;
+      --brand-charcoal:#323131;
+
+      --ink:#323131;
+      --muted:#6E7377;
+      --line:#E4E8EB;
+      --paper:#FFFFFF;
+      --canvas:#F7F8F8;
+      --soft:#F3F6F8;
+      --shadow:0 20px 55px rgba(50,49,49,.09);
+
+      --heading:"Manrope", sans-serif;
+      --body:"Poppins", sans-serif;
+
+      --radius-xl:30px;
+      --radius-lg:20px;
+      --radius-md:14px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      background:var(--canvas);
+      color:var(--ink);
+      font-family:var(--body);
+      font-size:16px;
+      font-weight:400;
+      line-height:1.5;
+    }
+
+    a{color:inherit}
+
+    .shell{
+      min-height:100vh;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:19px clamp(20px,4vw,54px);
+      background:rgba(255,255,255,.95);
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter:blur(12px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+    }
+
+    .brand-logo{
+      width:42px;
+      height:42px;
+      object-fit:contain;
+      display:block;
+    }
+
+    .brand-copy{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+    }
+
+    .brand-copy strong{
+      font-family:var(--heading);
+      font-size:14px;
+      font-weight:500;
+      letter-spacing:-.02em;
+      color:var(--brand-charcoal);
+    }
+
+    .brand-copy span{
+      margin-top:5px;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .button,
+    .link-button{
+      appearance:none;
+      border-radius:999px;
+      padding:11px 17px;
+      font-family:var(--body);
+      font-size:13px;
+      font-weight:500;
+      text-decoration:none;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      white-space:nowrap;
+    }
+
+    .link-button{
+      border:1px solid var(--line);
+      background:white;
+      color:var(--ink);
+    }
+
+    .link-button:hover{
+      background:var(--brand-blue-soft);
+      border-color:#CFE0F0;
+    }
+
+    .button{
+      border:1px solid var(--brand-blue);
+      background:var(--brand-blue);
+      color:white;
+      box-shadow:0 8px 20px rgba(73,141,203,.18);
+    }
+
+    .button:hover{transform:translateY(-1px);background:var(--brand-blue-deep)}
+
+    main{
+      width:min(1200px, calc(100% - 40px));
+      margin:0 auto;
+      padding:52px 0 56px;
+      display:grid;
+      grid-template-columns:minmax(0,.9fr) minmax(530px,1.3fr);
+      gap:48px;
+      align-items:start;
+    }
+
+    .intro{
+      padding:25px 6px 0 0;
+      position:sticky;
+      top:115px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:var(--brand-blue-soft);
+      color:var(--brand-blue-deep);
+      font-size:11px;
+      font-weight:500;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--brand-green);
+    }
+
+    h1,h2,h3{
+      font-family:var(--heading);
+      font-style:normal;
+      font-weight:500;
+      text-transform:none;
+      letter-spacing:-.02em;
+      line-height:1.2;
+      color:var(--brand-charcoal);
+    }
+
+    h1{
+      margin:22px 0 17px;
+      font-size:clamp(3.2rem,5vw,4rem);
+      line-height:1.05;
+    }
+
+    .lead{
+      max-width:590px;
+      margin:0;
+      font-size:1.08rem;
+      color:#5D6368;
+      line-height:1.68;
+    }
+
+    .brand-line{
+      margin:24px 0 0;
+      padding:14px 16px;
+      border-left:3px solid var(--brand-green);
+      background:white;
+      border-radius:0 var(--radius-md) var(--radius-md) 0;
+      color:#555B60;
+      font-size:.9rem;
+    }
+
+    .trust-list{
+      display:grid;
+      gap:4px;
+      margin-top:28px;
+    }
+
+    .trust-item{
+      display:grid;
+      grid-template-columns:36px 1fr;
+      gap:12px;
+      align-items:start;
+      padding:13px 0;
+    }
+
+    .trust-icon{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      background:var(--brand-green-soft);
+      border:1px solid #DDEACB;
+      color:var(--brand-green-deep);
+      display:grid;
+      place-items:center;
+      font-family:var(--heading);
+      font-size:13px;
+      font-weight:500;
+    }
+
+    .trust-item strong{
+      display:block;
+      color:var(--brand-charcoal);
+      font-size:.9rem;
+      font-weight:500;
+    }
+
+    .trust-item span{
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:.8rem;
+      line-height:1.55;
+    }
+
+    .chat-card{
+      min-height:690px;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .chat-header{
+      padding:21px 23px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    }
+
+    .benny-id{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .benny-avatar{
+      position:relative;
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      background:var(--brand-blue);
+      display:grid;
+      place-items:center;
+      color:white;
+      font-family:var(--heading);
+      font-size:20px;
+      font-weight:500;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);
+    }
+
+    .benny-avatar::after{
+      content:"";
+      position:absolute;
+      right:-2px;
+      bottom:-2px;
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:var(--brand-green);
+      border:3px solid white;
+    }
+
+    .benny-meta strong{
+      display:block;
+      font-family:var(--heading);
+      font-size:15px;
+      font-weight:500;
+      color:var(--brand-charcoal);
+    }
+
+    .benny-meta span{
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .secure-chip{
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--brand-green-soft);
+      border:1px solid #DDEACB;
+      color:var(--brand-green-deep);
+      font-size:10px;
+      font-weight:500;
+    }
+
+    .messages{
+      padding:27px 23px 30px;
+      overflow:auto;
+      background:#FCFDFD;
+    }
+
+    .message-row{
+      display:flex;
+      margin-bottom:15px;
+    }
+
+    .message-row.user{justify-content:flex-end}
+
+    .bubble{
+      max-width:83%;
+      padding:14px 16px;
+      border-radius:18px;
+      font-size:.86rem;
+      line-height:1.62;
+      white-space:pre-wrap;
+    }
+
+    .message-row.benny .bubble{
+      background:var(--brand-blue-soft);
+      border:1px solid #DCEAF6;
+      color:var(--ink);
+      border-bottom-left-radius:6px;
+    }
+
+    .message-row.user .bubble{
+      background:var(--brand-blue);
+      color:white;
+      border-bottom-right-radius:6px;
+    }
+
+    .quick-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:3px 0 18px;
+    }
+
+    .chip{
+      appearance:none;
+      border:1px solid #CFDEEB;
+      background:white;
+      color:var(--brand-charcoal);
+      border-radius:999px;
+      padding:9px 12px;
+      font-family:var(--body);
+      font-size:.76rem;
+      font-weight:500;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .chip:hover{
+      background:var(--brand-blue-soft);
+      border-color:#BFD5E8;
+      color:var(--brand-blue-deep);
+    }
+
+    .prototype{
+      margin:0 18px 14px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#FAFBF7;
+      border:1px solid #E2E9D8;
+      color:#67714F;
+      font-size:.68rem;
+      line-height:1.45;
+    }
+
+    .composer{
+      padding:0 18px 18px;
+      background:white;
+    }
+
+    .composer-note{
+      margin:0 0 10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.66rem;
+    }
+
+    .composer-note button{
+      all:unset;
+      text-decoration:underline;
+      cursor:pointer;
+      color:var(--brand-blue-deep);
+    }
+
+    .composer-box{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:8px;
+      padding:8px;
+      background:#FBFCFC;
+      border:1px solid #DDE2E5;
+      border-radius:18px;
+      transition:.16s ease;
+    }
+
+    .composer-box:focus-within{
+      border-color:#B7D0E6;
+      box-shadow:0 0 0 3px rgba(73,141,203,.08);
+    }
+
+    #messageInput{
+      width:100%;
+      min-width:0;
+      max-height:120px;
+      resize:none;
+      border:0;
+      outline:0;
+      background:transparent;
+      padding:8px 4px;
+      font-family:var(--body);
+      font-size:.86rem;
+      color:var(--ink);
+    }
+
+    .icon-btn{
+      width:39px;
+      height:39px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      border:0;
+      background:white;
+      color:var(--brand-charcoal);
+      cursor:pointer;
+      font-family:var(--body);
+      font-size:18px;
+    }
+
+    .icon-btn.send{
+      background:var(--brand-blue);
+      color:white;
+    }
+
+    .file-state{
+      display:none;
+      margin:10px 4px 0;
+      padding:10px 12px;
+      background:var(--brand-green-soft);
+      border:1px solid #DDEACB;
+      border-radius:12px;
+      color:#66754A;
+      font-size:.72rem;
+    }
+
+    .file-state.show{display:block}
+
+    footer{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:18px clamp(20px,4vw,54px) 30px;
+      color:var(--muted);
+      font-size:.68rem;
+    }
+
+    .privacy-modal{
+      position:fixed;
+      inset:0;
+      z-index:50;
+      display:none;
+      place-items:center;
+      padding:20px;
+      background:rgba(50,49,49,.5);
+    }
+
+    .privacy-modal.open{display:grid}
+
+    .privacy-panel{
+      width:min(560px,100%);
+      padding:24px;
+      background:white;
+      border-radius:22px;
+      box-shadow:0 26px 75px rgba(50,49,49,.2);
+    }
+
+    .privacy-panel h2{
+      margin:0 0 10px;
+      font-size:1.6rem;
+    }
+
+    .privacy-panel p{
+      color:#62686D;
+      font-size:.84rem;
+      line-height:1.65;
+    }
+
+    .privacy-panel .button{margin-top:6px}
+
+    @media(max-width:920px){
+      .topbar{position:static}
+      main{
+        grid-template-columns:1fr;
+        gap:24px;
+        padding-top:30px;
+      }
+      .intro{
+        position:static;
+        padding-top:5px;
+      }
+      .chat-card{min-height:650px}
+    }
+
+    @media(max-width:580px){
+      .topbar{padding:15px}
+      .brand-copy span{display:none}
+      .top-actions .link-button{display:none}
+      main{width:min(100% - 20px,1200px)}
+      h1{font-size:3rem}
+      .lead{font-size:1rem}
+      .chat-header{padding:16px}
+      .messages{padding:20px 15px}
+      .bubble{max-width:92%}
+      .secure-chip{display:none}
+      footer{padding-left:16px;padding-right:16px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="https://thebenefits.group" aria-label="The Benefits Group home">
+        <img class="brand-logo" src="./tbg-mark.png" alt="">
+        <div class="brand-copy">
+          <strong>The Benefits Group</strong>
+          <span>Fortune 500-level benefits. Boutique-level service.</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <a class="link-button" href="https://talkingbenefits.com">Back to TalkingBenefits</a>
+        <a class="button" href="mailto:care@benefits.place">Talk to a human</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="pageTitle">
+        <span class="eyebrow">Quote assistant</span>
+        <h1 id="pageTitle">Meet Benny.</h1>
+
+        <p class="lead">
+          Start your benefits quote without the usual back-and-forth. Benny asks a few practical questions,
+          helps you gather what matters, and gives our team a clean place to start.
+        </p>
+
+        <p class="brand-line">
+          Technology should make service better — not replace it. Benny helps with the routine so a real person
+          can step in when judgment, urgency, or care matters.
+        </p>
+
+        <div class="trust-list">
+          <div class="trust-item">
+            <div class="trust-icon">1</div>
+            <div>
+              <strong>Clear, guided intake</strong>
+              <span>One useful question at a time, in plain language.</span>
+            </div>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon">2</div>
+            <div>
+              <strong>A real team behind the technology</strong>
+              <span>Ask a question, stop anytime, or hand it to us whenever you want.</span>
+            </div>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon">3</div>
+            <div>
+              <strong>Your information has a purpose</strong>
+              <span>What you provide is used to help prepare and service your benefits quote.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chat-card" aria-label="Benny quote assistant">
+        <div class="chat-header">
+          <div class="benny-id">
+            <div class="benny-avatar" aria-hidden="true">B</div>
+            <div class="benny-meta">
+              <strong>Benny</strong>
+              <span>The Benefits Group quote assistant</span>
+            </div>
+          </div>
+          <span class="secure-chip">Private intake</span>
+        </div>
+
+        <div class="messages" id="messages" aria-live="polite">
+          <div class="message-row benny">
+            <div class="bubble">Hi — I’m Benny. I can help you get a benefits quote started without turning this into a homework assignment. 😊
+
+Would you like to start a new quote, ask a benefits question, or connect with the team?</div>
+          </div>
+
+          <div class="quick-actions" id="quickActions">
+            <button class="chip" data-reply="Start a new quote">Start a new quote</button>
+            <button class="chip" data-reply="I have a benefits question">Ask a benefits question</button>
+            <button class="chip" data-reply="I'd like to talk to the team">Talk to the team</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="prototype">
+            Prototype mode: this page is not connected to a backend yet. Nothing typed or selected here is transmitted anywhere.
+          </div>
+
+          <div class="composer">
+            <p class="composer-note">
+              Operated by The Benefits Group.
+              <button id="privacyButton">Privacy &amp; data use</button>
+            </p>
+
+            <div class="composer-box">
+              <button class="icon-btn" id="fileButton" title="Choose a census file" aria-label="Choose a census file">＋</button>
+              <textarea id="messageInput" rows="1" placeholder="Message Benny…"></textarea>
+              <button class="icon-btn send" id="sendButton" aria-label="Send message">→</button>
+            </div>
+
+            <input id="fileInput" type="file" hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*">
+            <div class="file-state" id="fileState"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© The Benefits Group</span>
+      <span>Benny is a guided intake tool, not a substitute for plan documents or professional advice.</span>
+    </footer>
+  </div>
+
+  <div class="privacy-modal" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+    <div class="privacy-panel">
+      <h2 id="privacyTitle">Privacy &amp; data use</h2>
+      <p>
+        Benny is operated by The Benefits Group. Information you provide through this experience is intended solely
+        to help prepare, evaluate, and service your benefits quote or request.
+      </p>
+      <p>
+        This prototype is not yet connected to a backend, so nothing entered here is transmitted. Before live intake
+        is enabled, this notice will be updated to reflect the final secure processing and retention flow.
+      </p>
+      <button class="button" id="privacyClose">Got it</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById('messages');
+    const quickActions = document.getElementById('quickActions');
+    const input = document.getElementById('messageInput');
+    const send = document.getElementById('sendButton');
+    const fileButton = document.getElementById('fileButton');
+    const fileInput = document.getElementById('fileInput');
+    const fileState = document.getElementById('fileState');
+    const privacyButton = document.getElementById('privacyButton');
+    const privacyModal = document.getElementById('privacyModal');
+    const privacyClose = document.getElementById('privacyClose');
+
+    let quoteStep = 0;
+
+    function addMessage(text, who='user'){
+      const row = document.createElement('div');
+      row.className = `message-row ${who}`;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function bennyReply(text, delay=250){
+      window.setTimeout(() => addMessage(text, 'benny'), delay);
+    }
+
+    function respond(text){
+      const value = (text || '').trim();
+      if(!value) return;
+
+      addMessage(value, 'user');
+      input.value = '';
+      quickActions?.remove();
+
+      if(/start a new quote/i.test(value)){
+        quoteStep = 1;
+        bennyReply("Perfect. What’s the name of the company you’d like to quote?");
+        return;
+      }
+
+      if(/benefits question/i.test(value)){
+        bennyReply("Absolutely. This prototype isn’t connected to my benefits knowledge yet, but the finished version will answer here and bring in a real person whenever that’s the better next step.");
+        return;
+      }
+
+      if(/talk to the team/i.test(value)){
+        bennyReply("Easy. Use “Talk to a human” at the top and you’ll go straight to the team.");
+        return;
+      }
+
+      if(quoteStep === 1){
+        quoteStep = 2;
+        bennyReply(`Thanks. What state is ${value} headquartered in?`);
+      } else if(quoteStep === 2){
+        quoteStep = 3;
+        bennyReply("Great. Roughly how many employees are eligible for benefits?");
+      } else if(quoteStep === 3){
+        quoteStep = 4;
+        bennyReply("Got it. When is the plan’s next renewal date?");
+      } else if(quoteStep === 4){
+        quoteStep = 5;
+        bennyReply("Who is the current medical carrier, if you know it?");
+      } else if(quoteStep === 5){
+        quoteStep = 6;
+        bennyReply("That’s enough for a strong start. In the live version, I’d next invite you to attach a census and then securely hand everything to The Benefits Group team.");
+      } else {
+        bennyReply("Thanks. In the live version I’ll use that to keep the quote moving.");
+      }
+    }
+
+    send.addEventListener('click', () => respond(input.value));
+
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        respond(input.value);
+      }
+    });
+
+    document.querySelectorAll('[data-reply]').forEach(btn => {
+      btn.addEventListener('click', () => respond(btn.dataset.reply));
+    });
+
+    fileButton.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if(!file) return;
+      fileState.textContent = `Selected: ${file.name} — ready for secure upload once the live connection is enabled.`;
+      fileState.classList.add('show');
+    });
+
+    privacyButton.addEventListener('click', () => privacyModal.classList.add('open'));
+    privacyClose.addEventListener('click', () => privacyModal.classList.remove('open'));
+
+    privacyModal.addEventListener('click', e => {
+      if(e.target === privacyModal) privacyModal.classList.remove('open');
+    });
+  </script>
+</body>
+</html>
